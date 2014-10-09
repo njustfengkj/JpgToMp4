@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class DownloadPic{
     public static void main(String args[]){
@@ -29,7 +30,10 @@ public class DownloadPic{
     public static String download(String strUrl){
     	 
     	 String  name = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-         String path = "C:/jpg/";
+//    	 String outPath="C:/jpg/";
+    	 Random random = new Random(100);
+//    	 outPath=outPath+random.nextInt()*random.nextInt()+"/";
+         String path = "C:/jpg/"+random.nextInt()*random.nextInt()+"/";
          File dir = new File(path);
          if(!dir.exists())
               dir.mkdir();
