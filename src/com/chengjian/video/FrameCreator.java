@@ -6,8 +6,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import marvin.image.MarvinImage;
+import marvin.io.MarvinImageIO;
+import marvin.plugin.MarvinImagePlugin;
+import marvin.util.MarvinPluginLoader;
+
 public class FrameCreator {
 	public static BufferedImage images[];
+	public static MarvinImage mimages[];
 
 	public static void CreateFrames(int mp4Size, int effects[],
 			String picUrls_[]) {
@@ -28,6 +34,7 @@ public class FrameCreator {
 		// 把图片读入到内存中方面接下来的操作
 		images = new BufferedImage[4];
 		for (int i = 0; i < 4; i++) {
+			mimages[i] = MarvinImageIO.loadImage(jpgPath[i]);
 			try {
 				File imgFile = new File(jpgPath[i]);
 				images[i] = ImageIO.read(imgFile);
@@ -56,16 +63,18 @@ public class FrameCreator {
 					}
 				}
 			}
-			for (int j = 0; j < 3; j++)// 根据效果序列生成变换帧			{
+			for (int j = 0; j < 3; j++)// 根据效果序列生成变换帧
+			{
 				switch (effects[j]) {
 				case 0:// 旋转效果
 					for (int k = 0; k < 12; k++) {
 						// ImageIO.write(images[j],"jpg",new
 						// File(jpgPath[j].substring(0,jpgPath[j].lastIndexOf("."))+"_"+k+".jpg"));
 						try {
-							int temp=9+21*j+k;
+							int temp = 9 + 21 * j + k;
 							ImageIO.write(
-									RotateEffects.rotateImage(images[j], 30*(k+1)),
+									RotateEffects.rotateImage(images[j],
+											30 * (k + 1)),
 									"jpg",
 									new File(jpgPath[j].substring(0,
 											jpgPath[j].lastIndexOf("."))
@@ -76,14 +85,19 @@ public class FrameCreator {
 						}
 					}
 					break;
-				case 1://縮放效果
+				case 1:// 縮放效果
 					for (int k = 0; k < 12; k++) {
 						// ImageIO.write(images[j],"jpg",new
 						// File(jpgPath[j].substring(0,jpgPath[j].lastIndexOf("."))+"_"+k+".jpg"));
 						try {
-							int temp=9+21*j+k;
+							int temp = 9 + 21 * j + k;
 							ImageIO.write(
-									ScaleEffects.resizeImage(images[j], (int)(images[j].getWidth()*(0.917f-0.083f*k)),(int)(images[j].getHeight()*(0.917f-0.083f*k))),
+									ScaleEffects
+											.resizeImage(
+													images[j],
+													(int) (images[j].getWidth() * (0.917f - 0.083f * k)),
+													(int) (images[j]
+															.getHeight() * (0.917f - 0.083f * k))),
 									"jpg",
 									new File(jpgPath[j].substring(0,
 											jpgPath[j].lastIndexOf("."))
@@ -92,6 +106,41 @@ public class FrameCreator {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+					}
+					break;
+				case 2:// 高斯模糊
+					for (int k = 0; k < 12; k++) {
+						int temp = 9 + 21 * j + k;
+						MarvinImage mImgTmp = null;
+						// MarvinImage maImage;
+						// maImage=MarvinImageIO.loadImage(jpgPath[j]);
+						MarvinImagePlugin imagePlugin;
+						imagePlugin = MarvinPluginLoader
+								.loadImagePlugin("org.marvinproject.image.blur.gaussianBlur.jar");
+						// imagePlugin.
+						imagePlugin.setAttribute("radius", 2 * (k + 1));
+						imagePlugin.process(mimages[j], mImgTmp);
+						MarvinImageIO.saveImage(
+								mImgTmp,
+								jpgPath[j].substring(0,
+										jpgPath[j].lastIndexOf("."))
+										+ "_" + temp + ".jpg");
+					}
+					break;
+				case 3:// 扭曲变换
+					for (int k = 0; k < 12; k++) {
+						int temp = 9 + 21 * j + k;
+						MarvinImage mImgTmp = null;
+						MarvinImagePlugin imagePlugin;
+						imagePlugin = MarvinPluginLoader
+								.loadImagePlugin("org.marvinproject.image.transform.skew.jar");
+						imagePlugin.setAttribute("horizontal", 14 * (k + 1));
+						imagePlugin.process(mimages[j], mImgTmp);
+						MarvinImageIO.saveImage(
+								mImgTmp,
+								jpgPath[j].substring(0,
+										jpgPath[j].lastIndexOf("."))
+										+ "_" + temp + ".jpg");
 					}
 					break;
 
@@ -100,12 +149,11 @@ public class FrameCreator {
 				}
 			}
 
-		} 
-		else// 如果要求时长是9秒钟
+		} else// 如果要求时长是9秒钟
 		{
-			for (int j = 0; j < 4; j++)// 生成静态帧
-			{
-				for (int k = 0; k < 9; k++) {
+			// 先生成静态帧
+			for (int j = 0; j < 4; j++) {
+				for (int k = 0; k < 18; k++) {
 					// inputbig, "jpg", new
 					// File("C:/imageSort/targetPIC/"+name));
 					try {
@@ -119,6 +167,91 @@ public class FrameCreator {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				}
+			}
+			for (int j = 0; j < 3; j++)// 根据效果序列生成变换帧
+			{
+				switch (effects[j]) {
+				case 0:// 旋转效果
+					for (int k = 0; k < 12; k++) {
+						// ImageIO.write(images[j],"jpg",new
+						// File(jpgPath[j].substring(0,jpgPath[j].lastIndexOf("."))+"_"+k+".jpg"));
+						try {
+							int temp = 18 + 30 * j + k;
+							ImageIO.write(
+									RotateEffects.rotateImage(images[j],
+											30 * (k + 1)),
+									"jpg",
+									new File(jpgPath[j].substring(0,
+											jpgPath[j].lastIndexOf("."))
+											+ "_" + temp + ".jpg"));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					break;
+				case 1:// 縮放效果
+					for (int k = 0; k < 12; k++) {
+						// ImageIO.write(images[j],"jpg",new
+						// File(jpgPath[j].substring(0,jpgPath[j].lastIndexOf("."))+"_"+k+".jpg"));
+						try {
+							int temp = 18 + 30 * j + k;
+							ImageIO.write(
+									ScaleEffects
+											.resizeImage(
+													images[j],
+													(int) (images[j].getWidth() * (0.917f - 0.083f * k)),
+													(int) (images[j]
+															.getHeight() * (0.917f - 0.083f * k))),
+									"jpg",
+									new File(jpgPath[j].substring(0,
+											jpgPath[j].lastIndexOf("."))
+											+ "_" + temp + ".jpg"));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					break;
+				case 2:// 高斯模糊
+					for (int k = 0; k < 12; k++) {
+						int temp = 18 + 30 * j + k;
+						MarvinImage mImgTmp = null;
+						// MarvinImage maImage;
+						// maImage=MarvinImageIO.loadImage(jpgPath[j]);
+						MarvinImagePlugin imagePlugin;
+						imagePlugin = MarvinPluginLoader
+								.loadImagePlugin("org.marvinproject.image.blur.gaussianBlur.jar");
+						// imagePlugin.
+						imagePlugin.setAttribute("radius", 2 * (k + 1));
+						imagePlugin.process(mimages[j], mImgTmp);
+						MarvinImageIO.saveImage(
+								mImgTmp,
+								jpgPath[j].substring(0,
+										jpgPath[j].lastIndexOf("."))
+										+ "_" + temp + ".jpg");
+					}
+					break;
+				case 3:// 扭曲变换
+					for (int k = 0; k < 12; k++) {
+						int temp = 18 + 30 * j + k;
+						MarvinImage mImgTmp = null;
+						MarvinImagePlugin imagePlugin;
+						imagePlugin = MarvinPluginLoader
+								.loadImagePlugin("org.marvinproject.image.transform.skew.jar");
+						imagePlugin.setAttribute("horizontal", 14 * (k + 1));
+						imagePlugin.process(mimages[j], mImgTmp);
+						MarvinImageIO.saveImage(
+								mImgTmp,
+								jpgPath[j].substring(0,
+										jpgPath[j].lastIndexOf("."))
+										+ "_" + temp + ".jpg");
+					}
+					break;
+
+				default:
+					break;
 				}
 			}
 

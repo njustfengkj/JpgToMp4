@@ -3,14 +3,14 @@ package com.chengjian.video;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.Semaphore;
-
-import com.chengjian.video.CopyOfRotateEffects.ThreadA;
-import com.chengjian.video.CopyOfRotateEffects.ThreadB;
-import com.chengjian.video.CopyOfRotateEffects.ThreadC;
-import com.chengjian.video.CopyOfRotateEffects.ThreadD;
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.concurrent.Semaphore;
+//
+//import com.chengjian.video.CopyOfRotateEffects.ThreadA;
+//import com.chengjian.video.CopyOfRotateEffects.ThreadB;
+//import com.chengjian.video.CopyOfRotateEffects.ThreadC;
+//import com.chengjian.video.CopyOfRotateEffects.ThreadD;
 
 public class ScaleEffects {
 	public static BufferedImage resizeImage(final BufferedImage bufferedimage,
